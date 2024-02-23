@@ -142,7 +142,7 @@ def run():
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ban(ctx, member : discord.Member, reason):
         await member.ban(reason=reason, delete_message_days=1)
-        embed = discord.Embed(color=discord.Color.brand_red(), title="Ban", description="Bannissement", timestamp=now)
+        embed = discord.Embed(color=discord.Color.brand_red(), title="Ban", description="Bannissement")
         embed.set_author(name=f"Demandé par {ctx.author}", icon_url=ctx.author.avatar)
         embed.set_thumbnail(url=ctx.guild.icon)
         embed.set_image(url=ctx.guild.icon)
@@ -155,21 +155,6 @@ def run():
     async def ban_error(ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Tu n'as pas les permmissions requises")
-        else:
-            await ctx.send(error)
-
-    @bot.command()
-    @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def unban(ctx, member : discord.Member, reason):
-        await member.unban(reason=reason)
-        await ctx.send(f"You Unbanned {member}")
-
-
-    @unban.error
-    async def unban_error(ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send(f"Tu n'as pas les permissions requises")
         else:
             await ctx.send(error)
         
