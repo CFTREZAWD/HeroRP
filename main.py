@@ -17,9 +17,14 @@ with open("id.txt", 'r') as f:
 global alter
 alter = random.choice(alters)
 
+
+
+
 def run():
+
     intents = discord.Intents.all()
     bot = commands.Bot("!", intents=intents)
+    
 
     @bot.event
     async def on_ready():
@@ -53,22 +58,27 @@ def run():
             ValueError: If the 2 list doesn't have the same length.
             ValueError: If the searched value isn't in the list
         """
-        global alter
-        alter = random.choice(alters)
-        if len(alters) != len(ids):
-            raise ValueError("The 2 list should have the same length.")
-        index = alters.index(alter[0:])
-        if index > 0:
-            alter_id = ids[index]
+        
+        if ctx.channel.id == int(1209468326150148116):
+            global alter
+            alter = random.choice(alters)
+            if len(alters) != len(ids):
+                raise ValueError("The 2 list should have the same length.")
+            index = alters.index(alter[0:])
+            if index > 0:
+                alter_id = ids[index]
+            else:
+                raise ValueError("La valeur n'est pas présente dans la liste")
+            await ctx.send(f"Vous avez obtenu {alter}!")
+            role_to_add = Guild.get_role(ctx.guild, int(alter_id))
+            has_alter = Guild.get_role(ctx.guild, int(1209479085806583808))
+            await ctx.message.author.add_roles(role_to_add)
+            await ctx.message.author.add_roles(has_alter)
+            await ctx.message.author.edit(reason=f"Role assigé via la commande roll: {alter}")
+            logger.info(f"Role assigé via la commande roll: {alter}")
         else:
-            raise ValueError("La valeur n'est pas présente dans la liste")
-        await ctx.send(f"Vous avez obtenu {alter}!")
-        role_to_add = Guild.get_role(ctx.guild, int(alter_id))
-        has_alter = Guild.get_role(ctx.guild, int(1209479085806583808))
-        await ctx.message.author.add_roles(role_to_add)
-        await ctx.message.author.add_roles(has_alter)
-        await ctx.message.author.edit(reason=f"Role assigé via la commande roll: {alter}")
-        logger.info(f"Role assigé via la commande roll: {alter}")
+            logger.error(f"{ctx.message.author} is in the wrong channel !")
+            await ctx.send(f"Tu es dans le mauvais salon ! Va dans le salon https://discord.com/channels/1086621938480332870/1209468326150148116.")
     
     @bot.command()
     @commands.has_permissions(manage_messages=True)
@@ -213,6 +223,8 @@ def run():
             await ctx.send("Tu n'as pas les permmissions requises")
         else:
             await ctx.send(error)
+
+        
         
         
 

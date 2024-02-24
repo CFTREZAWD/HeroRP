@@ -42,12 +42,12 @@ LOGGING_CONFIG = {
         "bot" : {
             'handlers' : ["console", "file"],
             'level' : "DEBUG",
-            'propagate' : False
+            'propagate' : True
         },
         "discord" : {
             'handlers' : ["console2", "file"],
             'level' : "INFO",
-            'propagate' : False
+            'propagate' : True
         },
     },
 }
