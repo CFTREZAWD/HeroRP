@@ -163,5 +163,5 @@ cython_debug/
 .log/
 .test.py
 test.py
-.cahier_des_charges/
-.cahier_des_charges/
+.cdc.pdf
+cdc.pdf

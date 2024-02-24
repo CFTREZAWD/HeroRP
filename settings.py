@@ -34,13 +34,13 @@ LOGGING_CONFIG = {
             "level" : "DEBUG",
             "class" : "logging.FileHandler",
             "filename" : "logs/infos.log",
-            "mode" : "a+",
+            "mode" : "w",
             "formatter" : "verbose"
         }
     },
     "Loggers" : {
         "bot" : {
-            'handlers' : ["console"],
+            'handlers' : ["console", "file"],
             'level' : "DEBUG",
             'propagate' : False
         },

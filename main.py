@@ -7,6 +7,8 @@ import datetime as dt
 
 logger = settings.logging.getLogger("bot")
 
+
+
 with open("alters.txt", "r") as f:
     alters = [line.strip() for line in f.readlines()]
 with open("id.txt", 'r') as f:
@@ -18,6 +20,8 @@ alter = random.choice(alters)
 def run():
     intents = discord.Intents.all()
     bot = commands.Bot("!", intents=intents)
+
+    bot.remove_command("help")
 
     @bot.event
     async def on_ready():
@@ -41,6 +45,16 @@ def run():
 
     @bot.command()
     async def roll(ctx, role: discord.Role = alter):
+        """Roll Command
+
+        Args:
+            ctx : The context of the channel
+            role (discord.Role, optional): The role to add to the person. Defaults to alter.
+
+        Raises:
+            ValueError: If the 2 list doesn't have the same length.
+            ValueError: If the searched value isn't in the list
+        """
         global alter
         alter = random.choice(alters)
         if len(alters) != len(ids):
@@ -61,9 +75,15 @@ def run():
     @bot.command()
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def clear(ctx, amout):
+    async def clear(ctx, amount : int):
+        """Clear Command
+
+        Args:
+            ctx: The context of the channel
+            amout (int): Amount of message you want to delete
+        """
         channel = discord.Message.channel
-        z = await ctx.channel.purge(limit=int(amout)+1)
+        z = await ctx.channel.purge(limit=int(amount)+1)
         await ctx.send(f"Salon Nettoyé ! ({len(z)} messages supprimés)")
     
     @clear.error
@@ -78,6 +98,12 @@ def run():
     @bot.command()
     @commands.has_permissions(manage_channels=True)
     async def lock(ctx, channel : discord.TextChannel=None):
+        """Lock command
+
+        Args:
+            ctx : The context of the channel
+            channel (discord.TextChannel, optional): The channel you want to lock. Defaults to current channel.
+        """
         channel = channel or ctx.channel
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = False
