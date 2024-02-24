@@ -21,8 +21,6 @@ def run():
     intents = discord.Intents.all()
     bot = commands.Bot("!", intents=intents)
 
-    bot.remove_command("help")
-
     @bot.event
     async def on_ready():
         global alter
