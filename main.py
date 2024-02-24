@@ -7,6 +7,8 @@ import datetime as dt
 
 logger = settings.logging.getLogger("bot")
 
+
+
 with open("alters.txt", "r") as f:
     alters = [line.strip() for line in f.readlines()]
 with open("id.txt", 'r') as f:
@@ -18,6 +20,8 @@ alter = random.choice(alters)
 def run():
     intents = discord.Intents.all()
     bot = commands.Bot("!", intents=intents)
+
+    bot.remove_command("help")
 
     @bot.event
     async def on_ready():
@@ -41,6 +45,16 @@ def run():
 
     @bot.command()
     async def roll(ctx, role: discord.Role = alter):
+        """Roll Command
+
+        Args:
+            ctx : The context of the channel
+            role (discord.Role, optional): The role to add to the person. Defaults to alter.
+
+        Raises:
+            ValueError: If the 2 list doesn't have the same length.
+            ValueError: If the searched value isn't in the list
+        """
         global alter
         alter = random.choice(alters)
         if len(alters) != len(ids):
@@ -61,9 +75,15 @@ def run():
     @bot.command()
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def clear(ctx, amout):
+    async def clear(ctx, amount : int):
+        """Clear Command
+
+        Args:
+            ctx: The context of the channel
+            amout (int): Amount of message you want to delete
+        """
         channel = discord.Message.channel
-        z = await ctx.channel.purge(limit=int(amout)+1)
+        z = await ctx.channel.purge(limit=int(amount)+1)
         await ctx.send(f"Salon Nettoyé ! ({len(z)} messages supprimés)")
     
     @clear.error
@@ -78,6 +98,12 @@ def run():
     @bot.command()
     @commands.has_permissions(manage_channels=True)
     async def lock(ctx, channel : discord.TextChannel=None):
+        """Lock command
+
+        Args:
+            ctx : The context of the channel
+            channel (discord.TextChannel, optional): The channel you want to lock. Defaults to current channel.
+        """
         channel = channel or ctx.channel
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = False
@@ -87,6 +113,12 @@ def run():
     @bot.command()
     @commands.has_permissions(manage_channels=True)
     async def unlock(ctx, channel : discord.TextChannel=None):
+        """Unlock Command
+
+        Args:
+            ctx : The context of the channel
+            channel (discord.TextChannel, optional): The channel you want to unlock. Defaults to current channel.
+        """
         channel = channel or ctx.channel
         overwrite = channel.overwrites_for(ctx.guild.default_role)
         overwrite.send_messages = True
@@ -99,6 +131,12 @@ def run():
     @bot.command()
     @commands.has_permissions(administrator=True)
     async def mute(ctx, member: discord.Member):
+        """Mute Command
+
+        Args:
+            ctx : The context of the channel
+            member (discord.Member): The member you want to mute
+        """
         role = ctx.guild.get_role(int(1210512003454599198))
         guild = ctx.guild
         await member.add_roles(role) 
@@ -109,6 +147,12 @@ def run():
     @bot.command()
     @commands.has_permissions(administrator=True)
     async def unmute(ctx, member: discord.Member):
+        """Unmute Command
+
+        Args:
+            ctx : The context of the channel
+            member (discord.Member): The member you want to unmute.
+        """
         role = ctx.guild.get_role(int(1210512003454599198))
         await member.remove_roles(role)
         await ctx.send(f"{member} a été demute.")
@@ -119,6 +163,13 @@ def run():
     @commands.has_permissions(kick_members=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def kick(ctx, member : discord.Member, reason):
+        """Kick Command
+
+        Args:
+            ctx : The context of the channel.
+            member (discord.Member): The Member you want to kick.
+            reason (_type_): The Reason of the kick.
+        """
         await member.kick(reason="Kicked by " + str(ctx.author))
         embed = discord.Embed(color=discord.Color.brand_red(), title="Kick", description="Exclusion")
         embed.set_author(name=f"Demandé par {ctx.author}", icon_url=ctx.author.avatar)
@@ -141,6 +192,13 @@ def run():
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def ban(ctx, member : discord.Member, reason):
+        """Ban Command
+
+        Args:
+            ctx : The context of the channel
+            member (discord.Member): The Member you want to ban.
+            reason (_type_): The reason of the ban
+        """
         await member.ban(reason=reason, delete_message_days=1)
         embed = discord.Embed(color=discord.Color.brand_red(), title="Ban", description="Bannissement")
         embed.set_author(name=f"Demandé par {ctx.author}", icon_url=ctx.author.avatar)
